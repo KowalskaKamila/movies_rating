@@ -12,10 +12,6 @@ export default {
 
   components: {
     Search
-  },
-
-  data: () => ({
-    //
-  })
+  }
 };
 </script>

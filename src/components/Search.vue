@@ -33,9 +33,7 @@
                 <br />
                 <p>
                   Premiere:
-                  <span
-                    style="font-weight:400"
-                  >{{ moment(movie.release_date).format('MMMM Do YYYY') }}</span>
+                  <span style="font-weight:400">{{ formatReleaseDate(movie.release_date) }}</span>
                 </p>
                 <br />
                 <v-icon small color="#F5BD1F" class="padding">mdi-star</v-icon>
@@ -60,28 +58,25 @@ export default {
   name: "Search",
 
   data: () => ({
+    // Search input string provided by a user.
     searchString: ""
   }),
 
   methods: {
-    moment: function(date) {
-      return moment(date);
-    },
-    date: function(date) {
-      return moment(date).format("MMMM Do YYYY");
-    }
-  },
-  filters: {
-    moment: function(date) {
+    // Returns formated release date.
+    formatReleaseDate: function(date) {
       return moment(date).format("MMMM Do YYYY");
     }
   },
 
   mounted() {
+    // Triggers loading movies from the server.
     this.$store.dispatch("loadMovies");
   },
   computed: {
     ...mapState(["movies"]),
+
+    // Keeps the movies that matched the searchString.
     filteredMovies: function() {
       var movies_array = this.movies,
         searchString = this.searchString;
@@ -102,7 +97,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 @import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
@@ -140,7 +134,6 @@ header {
 }
 .wrapper p {
   font-weight: bold;
-
   text-align: left;
 }
 

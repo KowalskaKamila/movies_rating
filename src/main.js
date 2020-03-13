@@ -3,12 +3,12 @@ import Vuex from "vuex";
 import Vuetify from "vuetify";
 import "vuetify/dist/vuetify.min.css";
 import App from "./App.vue";
-import store from './store.js'
+import store from './store.js';
 import vuetify from './plugins/vuetify';
-import 'material-design-icons-iconfont/dist/material-design-icons.css'
+import 'material-design-icons-iconfont/dist/material-design-icons.css';
 
 
-Vue.config.productionTip = false
+Vue.config.productionTip = false;
 
 Vue.use(Vuex);
 Vue.use(Vuetify, {
