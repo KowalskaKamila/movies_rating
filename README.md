@@ -1,24 +1,3 @@
-# movie_ranking
+The Top 100 Movies of IMDB
 
-## Project setup
-```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+The web-app connects to the IMDB Database to display the top 100 rated movies. It also allows the users to read detailed information about the movies and to search for a specific movie title.
