@@ -9,37 +9,53 @@
         solo
         append-icon="search"
         placeholder="Search for movie "
-      ></v-text-field>
+      />
     </div>
     <v-container class="wrapper">
       <v-expansion-panels>
-        <v-expansion-panel v-for="movie in filteredMovies" v-bind:key="movie.id">
+        <v-expansion-panel
+          v-for="movie in filteredMovies"
+          :key="movie.id"
+        >
           <v-expansion-panel-header>
             <a>
-              <img v-bind:src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" />
+              <img :src="'https://image.tmdb.org/t/p/w500' + movie.poster_path">
             </a>
-            <p class="title_width">{{movie.title}}</p>
-            <v-icon medium color="#F5BD1F">mdi-star</v-icon>
-            <p>{{movie.vote_average}}</p>
+            <p class="title_width">
+              {{ movie.title }}
+            </p>
+            <v-icon
+              medium
+              color="#F5BD1F"
+            >
+              mdi-star
+            </v-icon>
+            <p>{{ movie.vote_average }}</p>
           </v-expansion-panel-header>
           <v-expansion-panel-content>
             <v-card>
               <v-img
                 height="300px"
-                v-bind:src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path"
-              ></v-img>
+                :src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path"
+              />
               <v-card-text>
-                <p>{{movie.overview}}</p>
-                <br />
+                <p>{{ movie.overview }}</p>
+                <br>
                 <p>
                   Premiere:
                   <span style="font-weight:400">{{ formatReleaseDate(movie.release_date) }}</span>
                 </p>
-                <br />
-                <v-icon small color="#F5BD1F" class="padding">mdi-star</v-icon>
+                <br>
+                <v-icon
+                  small
+                  color="#F5BD1F"
+                  class="padding"
+                >
+                  mdi-star
+                </v-icon>
                 <span>
-                  <b>{{movie.vote_average}}/10</b> based on
-                  <b>{{movie.vote_count}}</b> user ratings
+                  <b>{{ movie.vote_average }}/10</b> based on
+                  <b>{{ movie.vote_count }}</b> user ratings
                 </span>
               </v-card-text>
             </v-card>
@@ -51,50 +67,48 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import moment from "moment";
+import { mapState } from 'vuex';
+import moment from 'moment';
 
 export default {
-  name: "Search",
+  name: 'Search',
 
   data: () => ({
     // Search input string provided by a user.
-    searchString: ""
+    searchString: '',
   }),
 
-  methods: {
-    // Returns formated release date.
-    formatReleaseDate: function(date) {
-      return moment(date).format("MMMM Do YYYY");
-    }
-  },
-
-  mounted() {
-    // Triggers loading movies from the server.
-    this.$store.dispatch("loadMovies");
-  },
   computed: {
-    ...mapState(["movies"]),
+    ...mapState(['movies']),
 
     // Keeps the movies that matched the searchString.
-    filteredMovies: function() {
-      var movies_array = this.movies,
-        searchString = this.searchString;
+    filteredMovies() {
+      let moviesArray = this.movies;
+      let { searchString } = this;
 
       if (!searchString) {
-        return movies_array;
+        return moviesArray;
       }
       searchString = searchString.trim().toLowerCase();
 
-      movies_array = movies_array.filter(function(item) {
-        if (item.title.toLowerCase().indexOf(searchString) !== -1) {
-          return item;
-        }
-      });
+      moviesArray = moviesArray.filter(
+        (item) => item.title.toLowerCase().indexOf(searchString) !== -1,
+      );
       // Return an array with the filtered data.
-      return movies_array;
-    }
-  }
+      return moviesArray;
+    },
+  },
+  mounted() {
+    // Triggers loading movies from the server.
+    this.$store.dispatch('loadMovies');
+  },
+
+  methods: {
+    // Returns formated release date.
+    formatReleaseDate(date) {
+      return moment(date).format('MMMM Do YYYY');
+    },
+  },
 };
 </script>
 

@@ -8,44 +8,46 @@ Vue.use(VueAxios, axios);
 
 
 export default new Vuex.Store({
-    state: {
-        movies: []
-    },
-    actions: {
-        loadMovies({ commit }) {
-            // Get 100 movies by calling API for 5 pages.
-            let api_list = [];
-            for (let page = 1; page <= 5; page++) {
-                const api = "https://api.themoviedb.org/3/movie/top_rated?api_key=49151716af6c213927eb153fb51b929f&language=en-US&page=" + page;
-                api_list.push(api);
+  state: {
+    movies: [],
+  },
+  actions: {
+    loadMovies({ commit }) {
+      // Get 100 movies by calling API for 5 pages.
+      const apiList = [];
+      for (let page = 1; page <= 5; page += 1) {
+        const api = `https://api.themoviedb.org/3/movie/top_rated?api_key=49151716af6c213927eb153fb51b929f&language=en-US&page=${page}`;
+        apiList.push(api);
+      }
+      const moviesList = [];
+      for (let api = 0; api < apiList.length; api += 1) {
+        moviesList.push(axios.get(apiList[api]));
+      }
+      axios
+        .all(moviesList)
+        .then(
+          // Aggregate all the responses into allMovies array.
+          axios.spread((...responses) => {
+            const allMovies = [];
+            for (let i = 0; i < responses.length; i += 1) {
+              const objects = responses[i].data.results;
+              for (let j = 0; j < objects.length; j += 1) {
+                allMovies.push(objects[j]);
+              }
             }
-            let movies_list = [];
-            for (let api = 0; api < api_list.length; api++) {
-                movies_list.push(axios.get(api_list[api]));
-            }
-            axios
-                .all(movies_list)
-                .then(
-                    // Aggregate all the responses into all_movies array.
-                    axios.spread((...responses) => {
-                        let all_movies = [];
-                        for (let i = 0; i < responses.length; i++) {
-                            let objects = responses[i].data.results;
-                            for (let j = 0; j < objects.length; j++) {
-                                all_movies.push(objects[j]);
-                            }
-                        }
-                        commit('SET_MOVIES', all_movies);
-                    })
-                )
-                .catch(error => {
-                    console.log(error);
-                });
-        }
+            commit('SET_MOVIES', allMovies);
+          }),
+        )
+        .catch((error) => {
+          // eslint-disable-next-line no-console
+          console.log(error);
+        });
     },
-    mutations: {
-        SET_MOVIES(state, retrieved_movies) {
-            state.movies = retrieved_movies;
-        }
-    }
-})
+  },
+  mutations: {
+    SET_MOVIES(state, retrievedMovies) {
+      // eslint-disable-next-line no-param-reassign
+      state.movies = retrievedMovies;
+    },
+  },
+});
