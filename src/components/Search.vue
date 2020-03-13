@@ -1,25 +1,58 @@
 <template>
   <form id="app">
-    <div class="search">
-      <!-- Create a binding between the searchString model and the text field -->
-
-      <input type="text" v-model="searchString" placeholder="Search movie by title" />
+    <header>
+      <h1>The Top 100 Movies of IMDB</h1>
+    </header>
+    <div class="search_window">
+      <v-text-field
+        v-model="searchString"
+        solo
+        append-icon="search"
+        placeholder="Search for movie "
+      ></v-text-field>
     </div>
-    <ul>
-      <!-- Render a li element for every entry in the computed filteredMovies array. -->
-
-      <li v-for="movie in filteredMovies" v-bind:key="movie.id">
-        <a>
-          <img v-bind:src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" />
-        </a>
-        <p>{{movie.title}}</p>
-      </li>
-    </ul>
+    <v-container class="wrapper">
+      <v-expansion-panels>
+        <v-expansion-panel v-for="movie in filteredMovies" v-bind:key="movie.id">
+          <v-expansion-panel-header>
+            <a>
+              <img v-bind:src="'https://image.tmdb.org/t/p/w500' + movie.poster_path" />
+            </a>
+            <p class="title_width">{{movie.title}}</p>
+            <v-icon medium color="#F5BD1F">mdi-star</v-icon>
+            <p>{{movie.vote_average}}</p>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <v-card>
+              <v-img
+                height="300px"
+                v-bind:src="'https://image.tmdb.org/t/p/w500' + movie.backdrop_path"
+              ></v-img>
+              <v-card-text>
+                <p>{{movie.overview}}</p>
+                <br />
+                <p>
+                  Premiere:
+                  <span style="font-weight:400">{{ moment(movie).format('MMMM Do YYYY') }}</span>
+                </p>
+                <br />
+                <v-icon small color="#F5BD1F" class="padding">mdi-star</v-icon>
+                <span>
+                  <b>{{movie.vote_average}}/10</b> based on
+                  <b>{{movie.vote_count}}</b> user ratings
+                </span>
+              </v-card-text>
+            </v-card>
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
+    </v-container>
   </form>
 </template>
 
 <script>
 import { mapState } from "vuex";
+import moment from "moment";
 
 export default {
   name: "Search",
@@ -27,6 +60,20 @@ export default {
   data: () => ({
     searchString: ""
   }),
+
+  methods: {
+    moment: function(date) {
+      return moment(date);
+    },
+    date: function(date) {
+      return moment(date).format("MMMM Do YYYY");
+    }
+  },
+  filters: {
+    moment: function(date) {
+      return moment(date).format("MMMM Do YYYY");
+    }
+  },
 
   mounted() {
     this.$store.dispatch("loadMovies");
@@ -56,57 +103,54 @@ export default {
 
 
 <style scoped>
-.search {
-  background-image: linear-gradient(to bottom right, #1da7da, #00ced9);
+@import url("https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900");
 
-  box-shadow: 0 1px 1px #ccc;
-  border-radius: 2px;
-  width: 400px;
-  padding: 14px;
+#app {
+  font-family: "Roboto", sans-serif;
+}
+header {
+  text-align: center;
+  margin-top: 20px;
+}
+.search_window {
+  min-width: 280px;
+  max-width: 450px;
   margin: 45px auto 20px;
-  position: relative;
 }
 
-.search input {
-  background: #fff no-repeat 13px 13px;
-  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyBpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMC1jMDYwIDYxLjEzNDc3NywgMjAxMC8wMi8xMi0xNzozMjowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNSBXaW5kb3dzIiB4bXBNTTpJbnN0YW5jZUlEPSJ4bXAuaWlkOkU5NEY0RTlFMTA4NzExRTM5RTEzQkFBQzMyRjkyQzVBIiB4bXBNTTpEb2N1bWVudElEPSJ4bXAuZGlkOkU5NEY0RTlGMTA4NzExRTM5RTEzQkFBQzMyRjkyQzVBIj4gPHhtcE1NOkRlcml2ZWRGcm9tIHN0UmVmOmluc3RhbmNlSUQ9InhtcC5paWQ6RTk0RjRFOUMxMDg3MTFFMzlFMTNCQUFDMzJGOTJDNUEiIHN0UmVmOmRvY3VtZW50SUQ9InhtcC5kaWQ6RTk0RjRFOUQxMDg3MTFFMzlFMTNCQUFDMzJGOTJDNUEiLz4gPC9yZGY6RGVzY3JpcHRpb24+IDwvcmRmOlJERj4gPC94OnhtcG1ldGE+IDw/eHBhY2tldCBlbmQ9InIiPz4DjA/RAAABK0lEQVR42pTSQUdEURjG8dOY0TqmPkGmRcqYD9CmzZAWJRHVRIa0iFYtM6uofYaiEW2SRJtEi9YxIklp07ZkWswu0v/wnByve7vm5ee8M+85zz1jbt9Os+WiGkYdYxjCOx5wgFeXUHmtBSzpcCGa+5BJTCjEP+0nKWAT8xqe4ArPGEEVC1hHEbs2oBwdXkM7mj/JLZrad437sCGHOfUtcziutuYu2v8XUFF/4f6vMK/YgAH1HxkBYV60AR31gxkBYd6xAeF3VzMCwvzOBpypX8V4yuFRzX2d2gD/l5yjH4fYQEnzkj4fae5rJulF2sMXVrAsaTWttRFu4Osb+1jEDT71/ZveyhouTch2fINQL9hKefKjuYFfuznXWzXMTabyrvfyIV3M4vhXgAEAUMs7K0J9UJAAAAAASUVORK5CYII=);
-  border: none;
-  width: 100%;
-  line-height: 19px;
-  padding: 11px 0;
-
-  border-radius: 2px;
-  box-shadow: 0 2px 8px #c4c4c4 inset;
-  text-align: left;
-  font-size: 14px;
-  font-family: inherit;
-  color: #738289;
-  font-weight: bold;
-  outline: none;
-  text-indent: 40px;
-}
-
-ul {
-  list-style: none;
-  width: 428px;
+.wrapper {
+  width: 50%;
+  min-width: 380px;
+  max-width: 650px;
   margin: 0 auto;
   text-align: left;
 }
-ul li {
-  border-bottom: 1px solid #ddd;
-  padding: 10px;
-  overflow: hidden;
+.wrapper a {
+  max-width: 50px;
+  height: 60px;
+  margin-right: 20px;
 }
-ul li img {
-  width: 60px;
+.wrapper img {
+  width: 50px;
   height: 60px;
   float: left;
   border: none;
 }
-ul li p {
-  margin-left: 75px;
+.wrapper p {
   font-weight: bold;
-  padding-top: 12px;
-  color: #6e7a7f;
+
+  text-align: left;
+}
+
+.title_width {
+  width: 363px;
+}
+.mdi-star {
+  padding-bottom: 3px;
+  margin-right: 4px;
+  max-width: 24px;
+}
+v-icon {
+  text-align: right;
 }
 </style>

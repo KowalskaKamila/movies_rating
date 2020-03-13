@@ -5,13 +5,16 @@ import "vuetify/dist/vuetify.min.css";
 import App from "./App.vue";
 import store from './store.js'
 import vuetify from './plugins/vuetify';
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
 
 
 Vue.config.productionTip = false
 
 Vue.use(Vuex);
 Vue.use(Vuetify, {
-  inconfont: "md"
+  icons: {
+    iconfont: 'mdi', // default - only for display purposes
+  },
 });
 
 new Vue({
