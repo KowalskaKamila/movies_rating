@@ -33,7 +33,9 @@
                 <br />
                 <p>
                   Premiere:
-                  <span style="font-weight:400">{{ moment(movie).format('MMMM Do YYYY') }}</span>
+                  <span
+                    style="font-weight:400"
+                  >{{ moment(movie.release_date).format('MMMM Do YYYY') }}</span>
                 </p>
                 <br />
                 <v-icon small color="#F5BD1F" class="padding">mdi-star</v-icon>
