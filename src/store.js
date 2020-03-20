@@ -9,19 +9,17 @@ Vue.use(VueAxios, axios);
 
 export default new Vuex.Store({
   state: {
+    // Array for storing all the retrived movies from API call.
     movies: [],
   },
   actions: {
     loadMovies({ commit }) {
-      // Get 100 movies by calling API for 5 pages.
-      const apiList = [];
-      for (let page = 1; page <= 5; page += 1) {
-        const api = `https://api.themoviedb.org/3/movie/top_rated?api_key=49151716af6c213927eb153fb51b929f&language=en-US&page=${page}`;
-        apiList.push(api);
-      }
+      // Each API call returns 1 page with 20 movies, to get 100 movies we need to call API
+      // for 5 pages.
       const moviesList = [];
-      for (let api = 0; api < apiList.length; api += 1) {
-        moviesList.push(axios.get(apiList[api]));
+      const api = 'https://api.themoviedb.org/3/movie/top_rated?api_key=49151716af6c213927eb153fb51b929f&language=en-US&page=';
+      for (let page = 1; page < 5; page += 1) {
+        moviesList.push(axios.get(api + page));
       }
       axios
         .all(moviesList)
